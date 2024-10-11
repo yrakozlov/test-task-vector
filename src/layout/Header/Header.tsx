@@ -2,7 +2,7 @@ import { FC } from 'react'
 import s from './Header.module.scss'
 import { Button } from '@mui/material';
 import { useAppDispatch } from '../../app/reduxHooks';
-import { openDraftPanel } from '../../redux/DraftPanelSlice/DraftPanelSlice';
+import { openDraftPanel } from '../../redux/FormSlice/FormSlice';
 
 const Header: FC = () => {
    const dispatch = useAppDispatch();

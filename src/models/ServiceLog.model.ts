@@ -1,9 +1,8 @@
-import { Dayjs } from "dayjs";
 
 export interface SERVICELOG {
     providerId: string;
-    serviceOrder: string ;
-    truckId: string ;
+    serviceOrder: string;
+    truckId: string;
     odometer: number;
     engineHours: number;
     type: string;

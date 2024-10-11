@@ -6,13 +6,15 @@ import s from './DraftsPanel.module.scss'
 import DraftsList from './DraftsList'
 
 const DraftsPanel: FC = () => {
-   const { panelIsOpen } = useAppSelector(({ draftPanel }) => draftPanel)
+   const { panelIsOpen, storedDrafts } = useAppSelector(({ form }) => form)
 
    return (
       <div className={`${s.draftsPanel}${panelIsOpen ? ` ${s.draftsPanelOpen}` : ''}`}>
          <div className={s.container}>
             <DraftsList />
-            <Form />
+            {storedDrafts.length > 0 ? <Form /> : <div className={s['empty-block']}>
+               <h2>Please add a new draft</h2>
+            </div>}
          </div>
       </div>
    )

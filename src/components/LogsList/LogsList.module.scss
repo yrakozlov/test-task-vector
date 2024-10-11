@@ -1,0 +1,51 @@
+.logs-container {
+   padding: 20px;
+   background-color: var(--background-night-additional);
+   max-width: 100%;
+   overflow-x: auto;
+}
+
+.logs-table {
+   width: 100%;
+   border-collapse: collapse;
+   text-align: left;
+   font-family: 'Arial', sans-serif;
+
+   th,
+   td {
+      padding: 12px;
+      border-bottom: 1px solid var(--background-night-inputs);
+   }
+
+   th {
+      background-color: var(--background-night-main);
+      color: var(--foreground-night-main);
+      text-transform: uppercase;
+   }
+
+   tr:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+   }
+
+   tbody tr:nth-child(odd) {
+      background-color: rgba(255, 255, 255, 0.05);
+   }
+
+   td {
+      color: var(--foreground-night-main);
+   }
+}
+
+.list-actions {
+   display: flex;
+   align-items: center;
+   gap: 8px;
+}
+
+.filters {
+   display: flex;
+   align-items: center;
+   gap: 8px;
+
+   margin-bottom: 20px;
+}

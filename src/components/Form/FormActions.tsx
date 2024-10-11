@@ -1,17 +1,26 @@
 import { Button } from '@mui/material';
 import { FC } from 'react';
 import s from './Form.module.scss'
+import { useAppDispatch, useAppSelector } from '../../app/reduxHooks';
+import { deleteDraft } from '../../redux/FormSlice/FormSlice';
 
 interface FormActionsProps {
-    onSubmit: (typeBtn: 'createServiceLog'  | 'deleteDraft') => void
+  datesHasError: boolean;
 }
 
-const FormActions: FC<FormActionsProps> = ({onSubmit}) => {
-  
-    return (
+const FormActions: FC<FormActionsProps> = ({ datesHasError }) => {
+  const { currentDraft } = useAppSelector(({ form }) => form)
+
+  const dispatch = useAppDispatch();
+
+  const onDelete = () => {
+    dispatch(deleteDraft(currentDraft))
+  }
+
+  return (
     <div className={s['forms-actions']}>
-       <Button variant='contained' type='submit'>Create Service Log</Button>
-       <Button variant='contained' color='warning' onClick={() => onSubmit('deleteDraft')} >Delete draft</Button>
+      <Button disabled={datesHasError} variant='contained' type='submit'>Create Service Log</Button>
+      <Button variant='contained' color='warning' onClick={onDelete} >Delete draft</Button>
     </div>
   )
 }

@@ -5,8 +5,9 @@
   min-height: 100%;
   background-color: #f4f4f4;
   transition: transform 0.3s ease-in-out;
-  transform: translateX(120%);
+  transform: translateX(140%);
   //   border-left: 1px solid #cac6c6;
+  min-width: 600px;
   z-index: 1;
 }
 
@@ -39,19 +40,28 @@
     border-radius: 5px;
     cursor: pointer;
     text-decoration: none;
-    transition: background-color 0.3s, transform 0.3s;
+    transition: background-color 0.3s;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
-    transform: translateX(2px);
     z-index: 0;
+    width: 100vw;
+    max-width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
     &:hover {
-      background-color: darken(#1976d2, 10%);
-      transform: translateX(0);
+      background-color: lighten(#1976d2, 5%);
     }
+
+    &.active {
+      background-color: lighten(#1976d2, 10%);
+    }
+
   }
 
   .createNew {
-    color: #1976d2;
+    color: white;
     background-color: transparent;
     border: unset;
     padding: 10px 20px;
@@ -60,5 +70,12 @@
     transform: translateX(2px);
     cursor: pointer;
     min-width: 88px;
+    text-align: right;
   }
+}
+
+.empty-block {
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
