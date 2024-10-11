@@ -1,28 +1,34 @@
-import { FC, useState } from 'react'
+import { FC } from 'react'
 import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
-import { TextField } from '@mui/material'
 import dayjs, { Dayjs } from 'dayjs';
+import { useAppDispatch, useAppSelector } from '../../app/reduxHooks';
+import { setDateRange } from '../../redux/FormSlice/FormSlice';
 
-const DatePickers: FC = () => {
-   const [value, setValue] = useState<[Dayjs | null, Dayjs | null]>([
-      dayjs(),
-      dayjs().add(1, 'day'),
-   ]);
+interface DatePickersProps {
+   setDatesHasError: (hasError: boolean) => void;
+   control: any;
+ }
+
+const DatePickers: FC<DatePickersProps> = ({setDatesHasError}) => {
+   const {dateRange} = useAppSelector(({form}) => form);
+   const dispatch = useAppDispatch();
 
    const handleChange = (newValue: [Dayjs | null, Dayjs | null]) => {
-      setValue(newValue);
+      dispatch(setDateRange({newValue}));
       if (newValue[0]) {
          const startDate = newValue[0];
-         setValue([startDate, dayjs(startDate).add(1, 'day')]);
+         dispatch(setDateRange({newValue: [startDate, dayjs(startDate).add(1, 'day')]}));
       }
    };
+
    return (
       <>
          <DateRangePicker
-            value={value}
+            value={dateRange}
             onChange={handleChange}
             disableDragEditing
             defaultRangePosition='end'
+            onError={(error) => setDatesHasError(!!error[1])}
          />
       </>
    )

@@ -1,14 +1,64 @@
 .draftsPanel {
-   position: absolute;
-   right: 0;
-   top: 0;
-   width: 300px;
-   height: 100%;
-   background-color: #f4f4f4;
-   transition: transform 0.3s ease-in-out;
-   transform: translateX(100%);
+  position: absolute;
+  right: 0;
+  top: 0;
+  min-height: 100%;
+  background-color: #f4f4f4;
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(120%);
+  //   border-left: 1px solid #cac6c6;
+  z-index: 1;
 }
 
 .draftsPanelOpen {
-   transform: translateX(0);
+  transform: translateX(0);
+}
+
+.container {
+  position: relative;
+  padding: 20px;
+  z-index: 1;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: absolute;
+  right: 100%;
+  top: 20px;
+
+  .tab {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #1976d2;
+    color: white;
+    font-size: 16px;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.3s;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    transform: translateX(2px);
+    z-index: 0;
+    &:hover {
+      background-color: darken(#1976d2, 10%);
+      transform: translateX(0);
+    }
+  }
+
+  .createNew {
+    color: #1976d2;
+    background-color: transparent;
+    border: unset;
+    padding: 10px 20px;
+    font-size: 16px;
+    text-align: center;
+    transform: translateX(2px);
+    cursor: pointer;
+    min-width: 88px;
+  }
 }

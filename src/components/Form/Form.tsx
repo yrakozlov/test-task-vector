@@ -1,14 +1,13 @@
 
-import { FC } from 'react'
-import { Button, TextField } from '@mui/material'
-import { Controller, useForm } from "react-hook-form";
+import { FC, useEffect, useState } from 'react'
+import {  useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
+import FormActions from './FormActions';
+import Fields from './Fields';
+import { useAppSelector } from '../../app/reduxHooks';
 
 import s from './Form.module.scss'
-import { DatePicker } from '@mui/x-date-pickers';
-import dayjs from 'dayjs';
-import DatePickers from '../DatePickers';
 
 const schema = yup.object({
    providerId: yup.string().required('Required field'),
@@ -16,88 +15,62 @@ const schema = yup.object({
    truckId: yup.string().required('Required field'),
    odometer: yup.number().typeError('Amount must be a number').required('Required field').min(0, 'Odometer cannot be less than 0'),
    engineHours: yup.number().typeError('Amount must be a number').required('Required field').min(0, 'Engine hours cannot be less than 0'),
-   startDate: yup.string().required('Required field'),
+   type:  yup.string().required('Required field'),
+   description: yup.string().required('Required field'),
 }).required();
 
 type FormData = yup.InferType<typeof schema>;
 
 const Form: FC = () => {
-   const { handleSubmit, control, formState: { errors } } = useForm<FormData>({
+   const {currentDraft, storedDrafts, dateRange} = useAppSelector(({form}) => form)
+   const [datesHasError, setDatesHasError] = useState<boolean>(false);
+
+   const { watch, control, formState: { isValid, isDirty }, handleSubmit, reset } = useForm<FormData>({
       resolver: yupResolver(schema),
       defaultValues: {
-         providerId: "",
-         serviceOrder: "",
-         truckId: "",
-         odometer: 0,
-         engineHours: 0,
-         startDate: dayjs().format('DD/MM/YYYY')
+         providerId: storedDrafts?.[currentDraft]?.providerId || "",
+         serviceOrder: storedDrafts?.[currentDraft]?.serviceOrder ||  "",
+         truckId: storedDrafts?.[currentDraft]?.truckId ||  "",
+         odometer: storedDrafts?.[currentDraft]?.odometer || 0,
+         engineHours: storedDrafts?.[currentDraft]?.engineHours || 0,
+         type: storedDrafts?.[currentDraft]?.type || 'planned',
+         description: storedDrafts?.[currentDraft]?.description ||''
       },
    });
 
-   const onSubmit = (data: FormData) => {
-      console.log(data);
+   const formValues = watch();
+
+   useEffect(() => {
+      if (isDirty) {
+         const newStored  =  [...storedDrafts];
+         newStored[currentDraft] = {...formValues, dateRange}
+         
+         localStorage.setItem('drafts', JSON.stringify(newStored));
+      }
+   }, [formValues]); 
+
+  
+   useEffect(() => {
+      reset({
+         providerId: storedDrafts?.[currentDraft]?.providerId || "",
+         serviceOrder: storedDrafts?.[currentDraft]?.serviceOrder || "",
+         truckId: storedDrafts?.[currentDraft]?.truckId || "",
+         odometer: storedDrafts?.[currentDraft]?.odometer || 0,
+         engineHours: storedDrafts?.[currentDraft]?.engineHours || 0,
+         type: storedDrafts?.[currentDraft]?.type || 'planned',
+         description: storedDrafts?.[currentDraft]?.description || ''
+      });
+   }, [currentDraft]);
+
+   const onSubmit = (typeBtn?: 'createServiceLog' | 'deleteDraft', data?: FormData) => {
+      console.log(data, typeBtn);
    }
 
    return (
-      <form onSubmit={handleSubmit(onSubmit)} className={s.root}>
-         <Controller
-            name="providerId"
-            control={control}
-            render={({ field, fieldState: { error } }) => (
-               <TextField helperText={error?.message} error={!!error?.message} label="Provider id" variant="outlined" {...field} />
-            )}
-         />
+      <form onSubmit={handleSubmit((data) => onSubmit('createServiceLog', data))} className={s.root}>
+         <Fields setDatesHasError={setDatesHasError} control={control}/>
 
-         <Controller
-            name="serviceOrder"
-            control={control}
-            render={({ field, fieldState: { error } }) => (
-               <TextField helperText={error?.message} error={!!error?.message} label="Service order" variant="outlined" {...field} />
-            )}
-         />
-
-         <Controller
-            name="truckId"
-            control={control}
-            render={({ field, fieldState: { error } }) => (
-               <TextField helperText={error?.message} error={!!error?.message} label="Truck id or trailer" variant="outlined" {...field} />
-            )}
-         />
-
-         <Controller
-            name="odometer"
-            control={control}
-            render={({ field, fieldState: { error } }) => (
-               <TextField type='number' inputProps={{ min: 0 }} helperText={error?.message} error={!!error?.message} label="Odometer" variant="outlined" {...field} />
-            )}
-         />
-
-         <Controller
-            name="engineHours"
-            control={control}
-            render={({ field, fieldState: { error } }) => (
-               <TextField type='number' inputProps={{ min: 0 }} helperText={error?.message} error={!!error?.message} label="Engine hours" variant="outlined" {...field} />
-            )}
-         />
-
-         <Controller
-            name="startDate"
-            control={control}
-            render={({ field, fieldState: { error } }) => (
-               <DatePicker
-                  label="Start date"
-                  defaultValue={dayjs()}
-                  inputRef={field.ref}
-                  onChange={(date) => {
-                     field.onChange(dayjs(date).format('DD/MM/YYYY') === 'Invalid Date' ? null : dayjs(date).format('DD/MM/YYYY'));
-                  }} />
-            )}
-         />
-
-         <DatePickers />
-
-         <Button type='submit'>Sumbit</Button>
-         {errors.odometer?.message}
+         <FormActions onSubmit={onSubmit} />
       </form >
    )
 }
